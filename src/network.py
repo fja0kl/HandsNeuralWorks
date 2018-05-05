@@ -54,7 +54,7 @@ class Network(object):
 			if test_data:
 				print("Epoch {0}:{1}/{2}".format(j,self.evaluate(test_data),n_test))
 			else:
-				print("Epoch {} complete".format(j))
+				print("Epoch {0} complete".format(j))
 	
 	def update_mini_batch(self,mini_batch,eta):
 		nable_b = [np.zeros(b.shape) for b in self.biases]
