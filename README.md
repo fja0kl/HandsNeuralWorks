@@ -21,3 +21,13 @@ The Codes are mainly from Book: **[Deep-learning-with-python](https://www.pdfdri
 |个人博客(Coding)|[Click Me](http://fja0kl.coding.me/2018/07/15/Deep-Learning-with-Python-%E5%9F%BA%E4%BA%8EKeras%E7%9A%84Reuters%E6%96%B0%E9%97%BB%E5%88%86%E7%B1%BB/)|
 |csdn博客|[Click Me](https://blog.csdn.net/csdn0006/article/details/81051163)|
 |简书博客|[Click Me](https://www.jianshu.com/p/7a1e1d6a8ba5)|
+
+
+03.Boston-Housing: 房价预测[回归任务],具体分析请参考博客:
+
+|网址|链接|
+|:-:|:-:|
+|个人博客(github)|[Click Me](https://fja0kl.github.io/2018/07/15/%E5%9F%BA%E4%BA%8EKeras%E7%9A%84%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B/)|
+|个人博客(Coding)|[Click Me](http://fja0kl.coding.me/2018/07/15/%E5%9F%BA%E4%BA%8EKeras%E7%9A%84%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B/)|
+|csdn博客|[Click Me](https://blog.csdn.net/csdn0006/article/details/81053565)|
+|简书博客|[Click Me](https://www.jianshu.com/p/41e9daf5fa3b)|
