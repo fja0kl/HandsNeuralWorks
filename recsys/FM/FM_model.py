@@ -8,32 +8,37 @@ from tqdm import tqdm
 
 def vectorize_dic(dic, ix=None, p=None, n=0, g=0):
     """
+    向量化表示:将dataframe转为向量,同时完成onehot转换.
+
+    需要记录一个向量维度信息---ix: 从训练集中学习,然后用在训练集,测试集中.train once, use everywhere.
     dic -- dictionary of feature lists. Keys are the name of features 数据表示：字典类型，key：特征名称；value表示值
     ix -- index generator (default None)
     p -- dimension of feature space (number of columns in the sparse matrix) (default None)
-    n -- 
-    g -- 
+    n -- number of samples.
+    g -- number of dataframe columns in training set.
     """
     if ix == None:
         ix = dict()
 
-    nz = n * g
+    nnz = n * g
 
-    col_ix = np.empty(nz, dtype=int)
+    col_ix = np.empty(nnz, dtype=int)
 
     i = 0
-    for k, lis in dic.items():
+    for k, lis in dic.items():# col_index单独处理
         for t in range(len(lis)):
             ix[str(lis[t]) + str(k)] = ix.get(str(lis[t]) + str(k), 0) + 1
             col_ix[i+t*g] = ix[str(lis[t]) + str(k)]
         i += 1
 
-    row_ix = np.repeat(np.arange(0, n), g)
-    data = np.ones(nz)
+    row_ix = np.repeat(np.arange(0, n), g)  # 对数组中的元素进行连续重复复制;输出数组，其形状与原数组相同，但沿给定轴除外
+    data = np.ones(nnz)
     if p == None:
         p = len(ix)
 
     ixx = np.where(col_ix < p)
+    
+    # a[row_ind[k], col_ind[k]] = data[k]
     return csr.csr_matrix((data[ixx], (row_ix[ixx], col_ix[ixx])), shape=(n, p)), ix
 
 def batcher(X, y, batch_size=-1):
@@ -61,7 +66,7 @@ test_path = 'data/ua.test'
 train = pd.read_csv(train_path, sep='\t', names=cols) # dataframe
 test = pd.read_csv(test_path, sep='\t', names=cols)
 
-'''
+
 # to numpy
 x_train, ix = vectorize_dic({'Users': train['UserID'], 'Movies': train['MovieID']}, n=len(train),g=2)
 # ix: 保证x_train, x_test 特征维度相同
@@ -72,13 +77,14 @@ x_test = x_test.todense()
 
 y_train = train['Rating'].values
 y_test = test['Rating'].values
-'''
 
+
+'''
 x_train = train[['UserID','MovieID']].values
 x_test = test[['UserID','MovieID']].values
 y_train = train['Rating'].values
 y_test = test['Rating'].values
-
+'''
 print(x_train.shape, y_train.shape)
 print(x_test.shape, y_test.shape)
 ### 模型:input, variables, model, loss, optimizer
@@ -152,12 +158,12 @@ with tf.Session() as sess:
         # print(perm)
         for batch_X, batch_y in batcher(x_train[perm], y_train[perm],batch_size=batch_size):
             _, t = sess.run([train_op, loss], feed_dict={X: batch_X.reshape(-1, P), y: batch_y.reshape(-1, 1)})
-            # print(t)
+            print(t)
         
         errors = []
         for batch_X, batch_y in batcher(x_test, y_test):
             errors.append(sess.run(error, feed_dict={X: batch_X.reshape(-1, P),y: batch_y.reshape(-1, 1)}))
         rmse = np.sqrt(np.array(errors).mean())
-        # print(rmse)
+        print(rmse)
 
 
