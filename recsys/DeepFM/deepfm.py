@@ -1,3 +1,6 @@
+''''
+reference: https://github.com/ChenglongChen/tensorflow-DeepFM
+'''
 import numpy as np
 import tensorflow as tf
 from time import time
@@ -274,6 +277,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
         
         return y_pred
 
+    # 待优化: 真正的early_stopping
     def training_termination(self, valid_result):
         if len(valid_result) > 5:
             if self.greater_is_better:
