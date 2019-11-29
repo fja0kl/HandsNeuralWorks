@@ -139,7 +139,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
                         self.loss += tf.contrib.layers.l2_regularizer(self.l2_reg)(self.weights['layer_%d' % i])
                 if self.use_fm:
                     self.loss += tf.contrib.layers.l2_regularizer(self.l2_reg)(self.weights['feature_linear'])
-                    self.loss += tf.contrib.layers.l2_regularizer(self.l2_reg)(self.weights['feature_embeddings'])
+                self.loss += tf.contrib.layers.l2_regularizer(self.l2_reg)(self.weights['feature_embeddings'])
                 
             # 4. optimizer
             if self.optimizer_type == 'adam':
@@ -154,7 +154,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
             
             
             # 5. train
-            self.saver = tf.train.Saver()
+            # self.saver = tf.train.Saver() # 用于模型保存
             init = tf.global_variables_initializer()
             self.sess = tf.Session()
             self.sess.run(init)
