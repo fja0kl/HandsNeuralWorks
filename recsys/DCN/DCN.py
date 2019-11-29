@@ -92,8 +92,16 @@ class DCN(BaseEstimator, TransformerMixin):
                 x_l = self._x0
 
                 for l in range(self.cross_layer_num):
-                    x_l = tf.tensordot(tf.matmul(self._x0, x_l, transpose_b=True),
-                                    self.weights['cross_layer_%d' % l], 1) + self.weights['cross_bias_%d' % l] + x_l
+                    # cross_layer: x_l+1 = x_0 * x_l.T * W_l + b_l + x_l
+                    # 默认为列向量
+                    # x_l = tf.tensordot(tf.matmul(self._x0, x_l, transpose_b=True),
+                                    # self.weights['cross_layer_%d' % l], 1) + self.weights['cross_bias_%d' % l] + x_l
+                    # 上式可以简化运算,先算x_l.T * w_l 得到一个实数,然后再和前面的x_0进行计算
+                    xlT_w = tf.tensordot(x_l, self.weights['cross_layer_%d' % l],axes=(1,0))
+                    print(xlT_w)
+                    print(self.weights['cross_layer_%d' % l])
+                    x_l = tf.matmul(self._x0, xlT_w) + \
+                        self.weights['cross_bias_%d' % l] + x_l
                 
                 self.cross_part_out = tf.reshape(x_l, (-1, self.total_size))
             
@@ -275,8 +283,7 @@ class DCN(BaseEstimator, TransformerMixin):
         return loss
 
     def fit(self, cate_Xi_train,cate_Xv_train, numeric_Xv2_train,y_train,
-        cate_Xi_valid=None, cate_Xv_valid=None, numeric_Xv2_valid=None, y_valid=None,
-        early_stopping=False,refit=False):
+        cate_Xi_valid=None, cate_Xv_valid=None, numeric_Xv2_valid=None, y_valid=None):
         has_valid = cate_Xi_valid is not None
 
         for epoch in range(self.epoch):
